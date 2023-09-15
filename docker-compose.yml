@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  flowise_server:
+    image: flowiseai/flowise
+    container_name: container_flowise
+    restart: always
+    environment:
+      - PORT=${PORT}
+      - PASSPHRASE=${PASSPHRASE}
+      - DATABASE_PATH=${DATABASE_PATH}
+      - APIKEY_PATH=${APIKEY_PATH}
+      - SECRETKEY_PATH=${SECRETKEY_PATH}
+      - LOG_PATH=${LOG_PATH}\
+      - FLOWISE_USERNAME=${FLOWISE_USERNAME}
+      - FLOWISE_PASSWORD=${FLOWISE_PASSWORD}
+      - DEBUG=${DEBUG}
+      - LOG_LEVEL=${LOG_LEVEL}
+    ports:
+      - "${PORT}:${PORT}"
+    volumes:
+      - ./.flowise:/root/.flowise
+    command: /bin/sh -c "sleep 3; flowise start"
+
+  database_server:
+    image: postgres:14.8
+    container_name: container_database
+    environment:
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+      - TZ=${TZ}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./.database/data:/var/lib/postgresql/data
